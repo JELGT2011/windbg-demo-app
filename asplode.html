@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Your Site Asplode</title>
+    <script src="http://code.jquery.com/jquery-1.8.0.min.js" type="text/javascript"></script>
+</head>
+    <body>
+        <h1>Your site asplode</h1>
+        <p><b>This page does 200x 404 not found errors.</b></p>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                for (var i = 0; i < 200; i++) {
+                    $.ajax('/404-' + i);
+                }
+            });
+        </script>
+    </body>
+</html>

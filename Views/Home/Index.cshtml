@@ -1,0 +1,66 @@
+﻿@model WinDbgDemo.Models.DemoViewModel
+@{
+    ViewBag.Title = "WinDbg demo";
+}
+
+<h2>Hello World!</h2>
+<p>The time is: @Model.Time</p>
+<p>The same time yesterday was: @Model.TheSameTimeYesterday</p>
+
+@using (Html.BeginForm("Save", "Home"))
+{
+    @Html.LabelFor(model => model.Username, string.Format("Enter the username (was {0}): ", Model.Username))
+    <br />
+    @Html.EditorFor(model => model.Username)
+    <br />
+    <label>User's favourite colours:</label>
+    <div id="colours">
+        @for (var i = 0; i < Model.ListDataViewModels.Count(); i++)
+        {
+            <div class="colour-entry">
+                @Html.EditorFor(model => model.ListDataViewModels[i].Color)
+                <button class="remove-button">Remove</button>
+            </div>
+        }
+    </div>
+    <button class="add-button">Add</button>
+    <input type="submit" />
+}
+<hr/>
+<p>
+    <button class="asplode">Press me to asplode</button>
+</p>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#colours').on('click', '.remove-button', function (e) {
+            e.preventDefault();
+
+            // Remove the gap in the indexes or the model binder will drop items after this one.
+            var idre = /[^0-9]*([0-9]+).*/;
+            var idxBeingDeleted = $(this).siblings('input').attr('id').replace(idre, '$1');
+            $(this).parent().siblings().children('input').each(function () {
+                var idxCurrent = $(this).attr('id').replace(idre, '$1');
+                if (idxCurrent > idxBeingDeleted) {
+                    $(this).attr('id', $(this).attr('id').replace('_' + idxCurrent + '_', '_' + (idxCurrent - 1) + '_'));
+                    $(this).attr('name', $(this).attr('name').replace('[' + idxCurrent + ']', '[' + (idxCurrent - 1) + ']'));
+                }
+            });
+            $(this).parent().remove();
+        });
+        $('.add-button').click(function (e) {
+            e.preventDefault();
+
+            // Add a new item with an index one greater than the existing ones.
+            var idx = $('.colour-entry').length;
+            $('#colours').append($(
+                '<div class="colour-entry">' +
+                    '<input class="text-box single-line" id="ListDataViewModels_' + idx + '__Color" name="ListDataViewModels[' + idx + '].Color" type="text"> ' +
+                    '<button class="remove-button">Remove</button>' +
+                '</div>'));
+        });
+        $('.asplode').click(function () {
+            window.open('/asplode.html', '_blank');
+        });
+    });
+</script>
